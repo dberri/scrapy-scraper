@@ -25,7 +25,7 @@ class PinkSpider(scrapy.Spider):
 
         def extract_profile_with_xpath(query):
             keys = ['hair', 'age', 'height', 'weight']
-            # profile = {}
+            profile = {}
             profile_items = response.xpath(query).extract_first().strip()
             # for key, item in zip(keys, profile_items):
             #     profile[key] = item.strip()
