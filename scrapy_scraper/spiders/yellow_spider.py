@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_scraper.settings import SPIDER_URL
+import logging
 
 class YellowSpider(scrapy.Spider):
     name = "yellow"
@@ -14,26 +15,34 @@ class YellowSpider(scrapy.Spider):
 
     def parse_model(self, response):
         def extract_with_css(query):
-            return response.css(query).extract_first().strip()
+            result = response.css(query).extract_first()
+            if result is not None:
+                return result.strip()
+            else:
+                logging.warning(response.url)
 
         def extract_all_with_xpath(query):
             return response.xpath(query).extract()
 
         def extract_with_xpath(query):
-            return response.xpath(query).extract_first().strip()
+            result = response.xpath(query).extract_first()
+            if result is not None:
+                return result.strip()
+            else:
+                logging.warning(response.url)
 
         def extract_profile_with_xpath(query):
             keys = ['age', 'height', 'weight', 'manequim']
             profile = {}
             profile_items = response.xpath(query).extract()
             for key, item in zip(keys, profile_items):
-                profile[key] = item.strip(' ')
+                profile[key] = item.strip()
             return profile
 
         yield {
-            'name': extract_with_xpath('//span[@id="anuncio-nombre"]::text()[1]'),
-            # 'phone': extract_with_css('p.fone strong::text'), #.re(((apenas numeros)))
-            # 'place': extract_with_css('div.local h3::text').strip('Local: '),
+            'name': extract_with_xpath('//span[@id="anuncio-nombre"]/text()[1]'),
+            'phone': extract_with_css('span.telephone::text'), #.re(((apenas numeros)))
+            'place': extract_with_xpath('//span[@id="anuncio-poblacion"]/text()[1]'),
             # 'profile': extract_profile_with_xpath('//div[@class="infos"]/div[@class="col3"][1]/p/strong/following-sibling::text()[1]'),
             # 'photo-links': extract_all_with_xpath('//div[@class="cycle-slideshow"]/a/@href')
         }

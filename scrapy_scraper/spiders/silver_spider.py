@@ -49,7 +49,6 @@ class SilverSpider(scrapy.Spider):
                 'hair': extract_with_xpath('//div[@class="item"][7]//span/following-sibling::text()[1]'),
                 },
             'photo-links': extract_links()
-            # 'photo-links': extract_all_with_xpath('//a/img/@src')
         }
 
 # este tem que ter mais niveis para fazer scrape de cidades diferentes
