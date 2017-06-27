@@ -14,6 +14,8 @@ BOT_NAME = 'scrapy_scraper'
 SPIDER_MODULES = ['scrapy_scraper.spiders']
 NEWSPIDER_MODULE = 'scrapy_scraper.spiders'
 
+FEED_URI = 'data/%(name)s/%(time)s.json'
+FEED_FORMAT = 'json'
 
 LOG_LEVEL = 'INFO'
 
