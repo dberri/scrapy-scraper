@@ -30,11 +30,11 @@ class BlackSpider(scrapy.Spider):
                 profile[key] = item.strip(' ')
             return profile
 
-        yield {
-            'first_name': extract_with_css('p.nome-modelo-interna span.color::text'),
-            'last_name': extract_with_xpath('//p[@class="nome-modelo-interna"]/span[1]/following-sibling::text()[1]'),
-            'phone': extract_with_css('p.telefone-modelo-interna::text'),
-            'city': extract_with_css('p.cidade-modelo::text'),
-            'profile': extract_profile_with_xpath('//li[@class="opcao-submenu"]/span[1]/following-sibling::text()[1]'),
-            'photo-links': extract_all_with_xpath('//li/img[contains(@src, "modelos")]/@src')
-        }
+        first_name = extract_with_css('p.nome-modelo-interna span.color::text')
+        last_name = extract_with_xpath('//p[@class="nome-modelo-interna"]/span[1]/following-sibling::text()[1]')
+        item['name'] = first_name +' '+ last_name
+        item['phone'] = extract_with_css('p.telefone-modelo-interna::text')
+        item['photoLinks'] = extract_all_with_xpath('//li/img[contains(@src, "modelos")]/@src')
+        # 'city': extract_with_css('p.cidade-modelo::text')
+        # 'profile': extract_profile_with_xpath('//li[@class="opcao-submenu"]/span[1]/following-sibling::text()[1]')
+        yield item
