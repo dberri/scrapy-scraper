@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_scraper.settings import SPIDER_URL
+from scrapy_scraper.items import ModelItem
 import logging
 
 class YellowSpider(scrapy.Spider):
@@ -8,6 +9,9 @@ class YellowSpider(scrapy.Spider):
     start_urls = [SPIDER_URL[name]]
 
     def parse(self, response):
+        yield scrapy.FormRequest.from_response(response=response, callback=self.parse_page)
+
+    def parse_page(self, response):
         # follow links to author pages
         for href in response.css('div.anuncio a::attr(href)'):
             print(href)
@@ -39,10 +43,10 @@ class YellowSpider(scrapy.Spider):
                 profile[key] = item.strip()
             return profile
 
-        yield {
-            'name': extract_with_xpath('//span[@id="anuncio-nombre"]/text()[1]'),
-            'phone': extract_with_css('span.telephone::text'), #.re(((apenas numeros)))
-            'place': extract_with_xpath('//span[@id="anuncio-poblacion"]/text()[1]'),
-            # 'profile': extract_profile_with_xpath('//div[@class="infos"]/div[@class="col3"][1]/p/strong/following-sibling::text()[1]'),
-            # 'photo-links': extract_all_with_xpath('//div[@class="cycle-slideshow"]/a/@href')
-        }
+        item = ModelItem()
+        item['name'] = extract_with_xpath('//span[@id="anuncio-nombre"]/text()[1]')
+        item['phone'] = extract_with_css('span.telephone::text')
+        # item['photoLinks'] =
+        # 'place': extract_with_xpath('//span[@id="anuncio-poblacion"]/text()[1]'),
+
+        yield item
