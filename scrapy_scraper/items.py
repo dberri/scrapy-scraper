@@ -8,7 +8,7 @@
 import scrapy
 
 
-class ScrapyScraperItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class ModelItem(scrapy.Item):
+    name = scrapy.Field()
+    phone = scrapy.Field()
+    photoLinks = scrapy.Field()
