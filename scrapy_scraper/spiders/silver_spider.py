@@ -1,6 +1,7 @@
 import scrapy
-from scrapy_scraper.settings import SPIDER_URL
+from scrapy_scraper.settings import SPIDER_URL, CUSTOM_SILVER_URL
 from scrapy_scraper.items import ModelItem
+from scrapy import Request
 import logging
 import re
 
@@ -14,11 +15,17 @@ class SilverSpider(scrapy.Spider):
         for href in response.css('div.acompanhante a::attr(href)'):
             yield response.follow(href, self.parse_model)
 
-        # follow pagination links
-        for href in response.css('li.next a::attr(href)'):
-            yield response.follow(href, self.parse)
+    def parse_photos(self, reponse):
+        logging.info(re.findall(r'\w*(?<=[0-9]).jpg/ensaios', response.body))
+
+    def get_photos(self, response):
+        model_id = response.xpath('//div[@class="ensaio"]/a/@data-source').extract_first()
+        url = CUSTOM_SILVER_URL + model_id
+        res =  Request(url)
+        logging.info(res.body)
 
     def parse_model(self, response):
+
         def extract_with_css(query):
             result = response.css(query).extract_first()
             if result is not None:
@@ -37,7 +44,8 @@ class SilverSpider(scrapy.Spider):
                 logging.warning(response.url)
 
         def extract_links():
-            logging.info(re.findall(r'\w*(?<=[0-9]).jpg/ensaios', response.body))
+            # return re.findall(r'\w*(?<=[0-9]).jpg/ensaios', response.body)
+            return response.xpath('//div[@class="ensaio-destaque"]/img[1]/@src').extract_first()
 
         item = ModelItem()
         item['name'] = extract_with_css('div.info-white h1::text')
