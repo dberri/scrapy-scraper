@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_scraper.settings import SPIDER_URL
+from scrapy_scraper.items import ModelItem
 
 class BlackSpider(scrapy.Spider):
     name = "black"
@@ -32,6 +33,7 @@ class BlackSpider(scrapy.Spider):
 
         first_name = extract_with_css('p.nome-modelo-interna span.color::text')
         last_name = extract_with_xpath('//p[@class="nome-modelo-interna"]/span[1]/following-sibling::text()[1]')
+        item = ModelItem()
         item['name'] = first_name +' '+ last_name
         item['phone'] = extract_with_css('p.telefone-modelo-interna::text')
         item['photoLinks'] = extract_all_with_xpath('//li/img[contains(@src, "modelos")]/@src')
