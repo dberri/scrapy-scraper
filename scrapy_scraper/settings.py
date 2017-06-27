@@ -102,3 +102,7 @@ with open(dir_path+'/urls.txt', 'r') as f:
     for spider in spiders:
         SPIDER_URL[spider] = f.readline().strip()
 f.close()
+
+with open(dir_path+'/custom_url.txt', 'r') as f:
+    CUSTOM_SILVER_URL = f.readline().strip()
+f.close()
