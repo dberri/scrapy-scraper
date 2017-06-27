@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_scraper.settings import SPIDER_URL
+from scrapy_scraper.items import ModelItem
 import logging
 import re
 
@@ -38,17 +39,16 @@ class SilverSpider(scrapy.Spider):
         def extract_links():
             logging.info(re.findall(r'\w*(?<=[0-9]).jpg/ensaios', response.body))
 
-        yield {
-            'name': extract_with_css('div.info-white h1::text'),
-            'phone': extract_with_css('div.info-white p.telefone::text'),
-            # 'place': extract_with_css('div.local h3::text').strip('Local: '),
-            'profile': {
-                'age': extract_with_xpath('//div[@class="item"][1]//span/following-sibling::text()[1]'),
-                'height': extract_with_xpath('//div[@class="item"][2]//span/following-sibling::text()[1]'),
-                'weight': extract_with_xpath('//div[@class="item"][3]//span/following-sibling::text()[1]'),
-                'hair': extract_with_xpath('//div[@class="item"][7]//span/following-sibling::text()[1]'),
-                },
-            'photo-links': extract_links()
-        }
+        item = ModelItem()
+        item['name'] = extract_with_css('div.info-white h1::text')
+        item['phone'] = extract_with_css('div.info-white p.telefone::text')
+        item['photoLinks'] = extract_links()
+        # 'profile': {
+        #     'age': extract_with_xpath('//div[@class="item"][1]//span/following-sibling::text()[1]'),
+        #     'height': extract_with_xpath('//div[@class="item"][2]//span/following-sibling::text()[1]'),
+        #     'weight': extract_with_xpath('//div[@class="item"][3]//span/following-sibling::text()[1]'),
+        #     'hair': extract_with_xpath('//div[@class="item"][7]//span/following-sibling::text()[1]'),
+        #     },
+        yield item
 
 # este tem que ter mais niveis para fazer scrape de cidades diferentes
