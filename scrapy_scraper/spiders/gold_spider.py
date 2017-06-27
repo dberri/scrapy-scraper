@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_scraper.settings import SPIDER_URL
+from scrapy_scraper.items import ModelItem
 
 class GoldSpider(scrapy.Spider):
     name = "gold"
@@ -30,10 +31,10 @@ class GoldSpider(scrapy.Spider):
                 profile[key] = item.strip(' ')
             return profile
 
-        yield {
-            'name': extract_with_css('div.titulo h1::text'),
-            'phone': extract_with_css('p.fone strong::text'), #.re(((apenas numeros)))
-            'place': extract_with_css('div.local h3::text').strip('Local: '),
-            'profile': extract_profile_with_xpath('//div[@class="infos"]/div[@class="col3"][1]/p/strong/following-sibling::text()[1]'),
-            'photo-links': extract_all_with_xpath('//div[@class="cycle-slideshow"]/a/@href')
-        }
+        item = ModelItem()
+        item['name'] = extract_with_css('div.titulo h1::text')
+        item['phone'] = extract_with_css('p.fone strong::text') #.re(((apenas numeros)))
+        item['photoLinks'] = extract_all_with_xpath('//div[@class="cycle-slideshow"]/a/@href')
+        # 'place': extract_with_css('div.local h3::text').strip('Local: '),
+        # 'profile': extract_profile_with_xpath('//div[@class="infos"]/div[@class="col3"][1]/p/strong/following-sibling::text()[1]')
+        yield item
