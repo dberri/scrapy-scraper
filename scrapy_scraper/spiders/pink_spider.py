@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy_scraper.settings import SPIDER_URL
+from scrapy_scraper.items import ModelItem
 import logging
+
 
 class PinkSpider(scrapy.Spider):
     name = "pink"
@@ -31,13 +33,12 @@ class PinkSpider(scrapy.Spider):
             #     profile[key] = item.strip()
             return profile_items
             # iterate and find item by item with regex
-
-        yield {
-            'name': extract_with_css('h5.uk-margin-top-remove::text'),
-            'phone': extract_with_xpath('//tbody/tr[3]/td[2]/text()'),
-            'city': extract_with_xpath('//tbody/tr[1]/td[2]/text()'),
-            'profile': extract_profile_with_xpath('//caption/text()'),
-            'photo-links': extract_all_with_xpath('//div[@class="slides-container"]/ul/li/img/@data-src') # Não pega o primeiro link que vem de img src
-        }
+        item = ModelItem()
+        item['name'] = extract_with_css('h5.uk-margin-top-remove::text')
+        item['phone'] = extract_with_xpath('//tbody/tr[3]/td[2]/text()')
+        item['photoLinks'] = extract_all_with_xpath('//div[@class="slides-container"]/ul/li/img/@data-src') # Não pega o primeiro link que vem de img src
+        # 'city': extract_with_xpath('//tbody/tr[1]/td[2]/text()'),
+        # 'profile': extract_profile_with_xpath('//caption/text()'),
+        yield item
 
 # sera necessario mais niveis de scraping
