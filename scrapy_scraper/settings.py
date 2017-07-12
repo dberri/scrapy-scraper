@@ -97,7 +97,7 @@ ROBOTSTXT_OBEY = True
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 SPIDER_URL = {}
-spiders = ['black', 'blue', 'gold', 'pink', 'silver', 'yellow', 'brown']
+spiders = ['black', 'blue', 'gold', 'pink', 'silver', 'yellow', 'brown', 'white']
 with open(dir_path+'/urls.txt', 'r') as f:
     for spider in spiders:
         SPIDER_URL[spider] = f.readline().strip()
